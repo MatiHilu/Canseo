@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const upload = require("../middlewares/upload");
-
+/*
 exports.register = (req, res) => {
   // Validar la solicitud
   if (!req.body) {
@@ -71,8 +71,99 @@ exports.register = (req, res) => {
       });
     }
   });
-};
+};*/
 
+exports.register = (req, res) => {
+  // Validar la solicitud
+  if (!req.body) {
+    res.status(400).send({
+      message: "¡El contenido no puede estar vacío!"
+    });
+    return;
+  }
+
+  // Verificar si el email ya está registrado
+  Paseador.findByEmail(req.body.email, async (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message || "Ocurrió un error al verificar el email."
+      });
+      return;
+    }
+
+    if (data) {
+      res.status(400).send({
+        message: "El email ya está registrado."
+      });
+      return;
+    }
+
+    try {
+      // Obtener la ruta temporal del archivo de imagen
+      const fotoPerfil = req.file ? req.file.path : null;
+
+      // Crear un Paseador
+      const paseador = new Paseador({
+        nombre: req.body.nombre,
+        apellido: req.body.apellido,
+        email: req.body.email,
+        telefono: req.body.telefono,
+        direccion: req.body.direccion,
+        descripcion: req.body.descripcion,
+        password: await bcrypt.hash(req.body.password, 10), // Hash de la contraseña
+        id_barrio: req.body.id_barrio,
+        foto_perfil: fotoPerfil // Ruta del archivo de imagen de perfil
+      });
+
+      console.log(fotoPerfil)
+
+      // Obtener los días disponibles del cuerpo de la solicitud
+      
+      let dias_Disponibles;
+
+      if (Array.isArray(req.body.dias_disponibles)) {
+         dias_Disponibles = req.body.dias_disponibles || [];
+      } else {
+        dias_Disponibles = [req.body.dias_disponibles] || [];
+      }
+
+
+/*
+       console.log("req.body controlador", req.body)
+       console.log("req.body.dias_disponibles controlador", [req.body.dias_disponibles])
+       console.log("diasDisponibles controlador", dias_Disponibles)
+       console.log("diasDisponibles controlador", dias_Disponibles.length)*/
+
+
+
+
+
+
+      // Guardar el Paseador en la base de datos con los días disponibles
+      Paseador.create(paseador, dias_Disponibles, (err, data) => {
+        if (err) {
+          // Eliminar la imagen de perfil si ocurre un error al guardar en la base de datos
+          if (fotoPerfil) {
+            fs.unlinkSync(fotoPerfil);
+          }
+          res.status(500).send({
+            message: err.message || "Ocurrió un error al crear el Paseador."
+          });
+        } else {
+          res.send(data);
+        }
+      });
+    } catch (error) {
+      // Eliminar la imagen de perfil si ocurre un error
+      if (fotoPerfil) {
+        fs.unlinkSync(fotoPerfil);
+      }
+      res.status(500).send({
+        message: "Ocurrió un error al subir la imagen de perfil."
+      });
+    }
+  });
+};
 
 // Autenticación de paseador
 exports.login = (req, res) => {
@@ -170,7 +261,7 @@ exports.update = (req, res) => {
     return;
   }
 
-  console.log("imagen", req.file)
+  //console.log("imagen", req.file)
   
   try {
     // Obtener la ruta temporal del archivo de imagen
@@ -188,25 +279,24 @@ exports.update = (req, res) => {
     // Nombre del archivo de imagen de perfil o mantener el mismo si no se subió uno nuevo
     });
 
-    Paseador.updateById(req.params.paseadorId, paseador, (err, data) => {
+    const diasDisponibles = req.body.dias_disponibles || [];
+
+    Paseador.updateById(req.params.paseadorId, paseador, diasDisponibles, (err, data) => {
       if (err) {
-        // Eliminar la imagen de perfil si ocurre un error al guardar en la base de datos
-        /*if (fotoPerfil) {
-          fs.unlinkSync(fotoPerfil);
-        }*/
-          res.status(500).send({
-            message: err.message || "Ocurrió un error al editar el Paseador."
-          });
+        console.log("Ocurrió un error al subir la imagen de perfil. ", err);
       } else {
         res.send(data);
       }
     }); 
   } catch (error) {
+    //console.log("Ocurrió un error al subir la imagen de perfil. ", error);
     res.status(500).send({
       message: "Ocurrió un error al subir la imagen de perfil. " + error
     });
   }
+  
 };
+
 
 
 // Eliminar un Paseador con el id especificado en la solicitud

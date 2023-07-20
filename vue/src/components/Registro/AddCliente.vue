@@ -171,7 +171,7 @@
   
   <style scoped>
  .general{
-  min-height: 60vh; /*Hace que el footer quede pegado abajo incluso cuando no haya suficiente contenido*/ 
+  min-height: 60vh;  
   margin: 0 auto;
   padding-left: 10px;
   padding-right: 10px;

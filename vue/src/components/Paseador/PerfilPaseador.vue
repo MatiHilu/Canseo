@@ -14,6 +14,13 @@
       <p>Teléfono: {{ paseador.telefono }}</p>
       <p>Dirección: {{ paseador.direccion }}, {{ paseador.nombre_barrio }}</p>
       <p>Descripción: {{ paseador.descripcion }}</p>    
+      <p>Días de trabajo: <span v-if="paseador.dias_disponibles == 0">No seleccionado<br/>(Para poder aparecer en las busquedas tenés que tener al menos 1 día disponible para trabajar)</span>
+  <span v-else v-for="(dia, index) in paseador.dias_disponibles" :key="index">
+    {{ dia === 'domingo' ? 'Domingo' : (dia === 'lunes' ? 'Lunes' : (dia === 'martes' ? 'Martes' : (dia === 'miercoles' ? 'Miércoles' : (dia === 'jueves' ? 'Jueves' : (dia === 'viernes' ? 'Viernes' : (dia === 'sabado' ? 'Sábado' : dia)))))) }}
+    <span v-if="index !== paseador.dias_disponibles.length - 1">| </span>
+  </span>
+</p>
+   
     </div>
   
     <router-link  :to="'/editar-paseador/'">
@@ -86,7 +93,7 @@ export default {
 
 <style scoped>
 .general{
-  min-height: 60vh; /*Hace que el footer quede pegado abajo incluso cuando no haya suficiente contenido*/ 
+  min-height: 60vh;  
   margin: 0 auto;
   padding-left: 10px;
   padding-right: 10px;

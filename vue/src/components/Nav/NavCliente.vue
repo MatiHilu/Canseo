@@ -10,65 +10,65 @@
           <img class="icon" src="http://localhost:8081/uploads/imagen-hamburguesa.png" alt="Menú Hamburguesa">
         </div>
       </div>
-      
+
       <div :class="{ 'mobile-menu': true, 'open': isMobileMenuOpen }">
         <div @click="toggleMobileMenu" class="close-button">
           <img class="icon" src="http://localhost:8081/uploads/imagen-cerrar.png" alt="Cerrar Menú">
         </div>
         <!-- Contenido del menú -->
         <div class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <router-link to="/lista-paseadores" class="nav-link">Paseadores</router-link>
-            </li>
-            <li class="nav-item">
-                <router-link to="/reservas-cliente" class="nav-link">Reservas</router-link>
-            </li>
-            <li class="nav-item">
-                <router-link to="/perfil/cliente" class="nav-link">Perfil</router-link>
-            </li>
+          <li class="nav-item">
+            <router-link to="/lista-paseadores" class="nav-link">Paseadores</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/reservas-cliente" class="nav-link">Reservas</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/perfil/cliente" class="nav-link">Perfil</router-link>
+          </li>
         </div>
         <div class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" @click="logout">Cerrar sesión</a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link" @click="logout">Cerrar sesión</a>
+          </li>
         </div>
       </div>
     </div>
-  
+
     <!-- Menú normal -->
-  <nav class="navbar navbar-expand navbar-light" v-else>
+    <nav class="navbar navbar-expand navbar-light" v-else>
       <!-- Contenido del menú -->
       <router-link to="/" class="navbar-brand">
         <img src="http://localhost:8081/uploads/CanSeo.png" alt="CanSeo">
       </router-link>
       <div class="navbar-nav mr-auto mtop-10">
-            <li class="nav-item">
-                <router-link to="/lista-paseadores" class="nav-link">Paseadores</router-link>
-            </li>
-            <li class="nav-item">
-                <router-link to="/reservas-cliente" class="nav-link">Reservas</router-link>
-            </li>
-            <li class="nav-item">
-                <router-link to="/perfil/cliente" class="nav-link">Perfil</router-link>
-            </li>
-        </div>
-        <div class="navbar-nav mtop-10">
-            <li class="nav-item">
-                <a class="nav-link" @click="logout">Cerrar sesión</a>
-            </li>
-        </div>
+        <li class="nav-item">
+          <router-link to="/lista-paseadores" class="nav-link">Paseadores</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/reservas-cliente" class="nav-link">Reservas</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/perfil/cliente" class="nav-link">Perfil</router-link>
+        </li>
+      </div>
+      <div class="navbar-nav mtop-10">
+        <li class="nav-item">
+          <a class="nav-link" @click="logout">Cerrar sesión</a>
+        </li>
+      </div>
     </nav>
   </div>
 </template>
-  
-  <script>
+
+<script>
   import store from "@/store/index";
   export default {
     name: 'NavCliente',
     data() {
-    return {
-      isMobileMenuOpen: false,
-      isMobile: window.innerWidth <= 768 // Define el ancho máximo para considerar como pantalla de móvil
+      return {
+        isMobileMenuOpen: false,
+        isMobile: window.innerWidth <= 768 // Define el ancho máximo para considerar como pantalla de móvil
       };
     },
     created() {
@@ -96,29 +96,30 @@
       }
     },
   };
+</script>
 
-  </script>
-  
-  <style scoped>
-  .nav-link{
+<style scoped>
+  .nav-link {
     cursor: pointer;
   }
 
-  a{
+  a {
     color: #000;
   }
 
-  nav img{
+  nav img {
     width: 120px;
   }
-  .img-canseo-mobile{
+
+  .img-canseo-mobile {
     width: 110px;
   }
 
-  .img-canseo-mobile img{
+  .img-canseo-mobile img {
     width: 110px;
   }
-  .menu-mobile-box{
+
+  .menu-mobile-box {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -126,12 +127,12 @@
     padding: 0 5px 0 10px;
   }
 
-  .menu-button img{
+  .menu-button img {
     width: 45px;
     margin-top: 5px;
   }
 
-  .close-button img{
+  .close-button img {
     width: 25px;
     margin-top: 15px;
     margin-right: 5px;
@@ -163,9 +164,7 @@
     cursor: pointer;
   }
 
-  .mtop-10{
+  .mtop-10 {
     margin-top: 10px;
   }
-
-
-  </style>
+</style>
