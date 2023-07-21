@@ -1,1 +1,7 @@
-# Node.js Rest APIs with Express & MySQL CANSEO
+# CANSEO
+
+# Backend Node.js Rest APIs with Express
+
+# Frontend Vue
+
+# DB MySQL

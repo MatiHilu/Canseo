@@ -8,11 +8,11 @@
       <span class="paseadores">Paseadores</span>
       <form @submit.prevent="login">
         <div class="form-group">
-          <input type="email" id="email" v-model="email" required placeholder="Email">
+          <input type="email" id="email" v-model="email" required placeholder="Email" autocomplete="username">
         </div>
         <div class="form-group">
           <div class="password-input">
-            <input id="password" v-model="password" :type="passwordFieldType" required placeholder="Contraseña">
+            <input id="password" v-model="password" :type="passwordFieldType" required placeholder="Contraseña" autocomplete="current-password">
             <span type="button" @click="togglePasswordVisibility">
               <img v-if="showPassword" src="http://localhost:8081/uploads/show-password.png" alt="Mostrar contraseña">
               <img v-else src="http://localhost:8081/uploads/hide-password.png" alt="Ocultar contraseña">

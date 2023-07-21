@@ -3,43 +3,47 @@ import AuthService from "./AuthService";
 
 const PaseadoresService = {
   getAll() {
-  // Configurar el encabezado de autorización
-  AuthService.setAuthHeader();
+    // Configurar el encabezado de autorización
+    AuthService.setAuthHeader();
 
     return http.get("/paseadores");
   },
 
-  getByBarrio(clienteId) {
+  getByBarrio(clienteId, diaSemana) {
     // Configurar el encabezado de autorización
-  AuthService.setAuthHeader();
+    AuthService.setAuthHeader();
 
-    return http.get(`/paseadores/by-barrio/${clienteId}`);
+    return http.get(`/paseadores/by-barrio/${clienteId}?diaSemana=${diaSemana}`, {
+      params: {
+        dia_semana: diaSemana
+      }
+    });
   },
-  
+
   login(data) {
-// Configurar el encabezado de autorización
-AuthService.setAuthHeader();
+    // Configurar el encabezado de autorización
+    AuthService.setAuthHeader();
 
     return http.post("/paseadores/login", data);
   },
 
   get(id) {
-// Configurar el encabezado de autorización
-AuthService.setAuthHeader();
+    // Configurar el encabezado de autorización
+    AuthService.setAuthHeader();
 
     return http.get(`/paseadores/${id}`);
   },
 
   create(data) {
-// Configurar el encabezado de autorización
-AuthService.setAuthHeader();
+    // Configurar el encabezado de autorización
+    AuthService.setAuthHeader();
 
     return http.post("/paseadores/register", data);
   },
 
   update(paseadorId, data) {
-// Configurar el encabezado de autorización
-AuthService.setAuthHeader();
+    // Configurar el encabezado de autorización
+    AuthService.setAuthHeader();
 
     return http.put(`/paseadores/${paseadorId}`, data);
   },
@@ -52,15 +56,15 @@ AuthService.setAuthHeader();
   },
 
   delete(id) {
-// Configurar el encabezado de autorización
-AuthService.setAuthHeader();
+    // Configurar el encabezado de autorización
+    AuthService.setAuthHeader();
 
     return http.delete(`/paseadores/${id}`);
   },
 
   deleteAll() {
-// Configurar el encabezado de autorización
-AuthService.setAuthHeader();
+    // Configurar el encabezado de autorización
+    AuthService.setAuthHeader();
 
     return http.delete(`/paseadores`);
   }

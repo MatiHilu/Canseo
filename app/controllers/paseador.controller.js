@@ -222,9 +222,13 @@ exports.findAll = (req, res) => {
   });
 };
 
-// Encontrar paseadores por ID de barrio
+// Encontrar paseadores por ID de barrio + día disponible
 exports.findByBarrio = (req, res) => {
-  Paseador.getByBarrio(req.params.clienteId, (err, data) => {
+  const clienteId = req.params.clienteId;
+  const diaSemanaObject = JSON.parse(req.query.dia_semana);
+  const diaSemana = diaSemanaObject.dia_semana;
+  
+  Paseador.getByBarrio(clienteId, diaSemana, (err, data) => {
     if (err) {
       res.status(500).send({
         message: err.message || "Ocurrió un error al buscar los paseadores por ID de barrio."

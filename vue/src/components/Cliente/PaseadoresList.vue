@@ -6,7 +6,10 @@
     <div v-if="notification" class="notification" :class="notificationClass">
       {{ message }}
     </div>
+    <p>Fecha seleccionada: {{ date }}</p>
+    <p>Rango horario seleccionado: {{ time }}</p>
     <div class="paseadores-grid">
+      
       <div class="paseador-item" v-for="paseador in paseadores" :key="paseador.id+paseador.nombre">
         <img :src="getImageUrl(paseador.foto_perfil || '/uploads/default-profile.png')" :alt="paseador.nombre + ' ' + paseador.apellido">
         <router-link  :to="'/paseador/' + paseador.id">
@@ -23,6 +26,7 @@
 <script>
 import PaseadoresService from "@/services/PaseadoresService";
 import store from "@/store/index";
+import moment from 'moment';
 import NavCliente from "@/components/Nav/NavCliente.vue";
 
 export default {
@@ -35,6 +39,8 @@ export default {
       paseadores: [],
       notification: null,
       message: "",
+      date: null,
+      time: null
     };
   },
   mounted() {
@@ -44,9 +50,27 @@ export default {
   methods: {
     fetchPaseadores() {
       const clientId = store.getters.getClientId;
-      PaseadoresService.getByBarrio(clientId)
+      //const selectedDate = new Date(store.getters.getSelectedDate); // Ejemplo de fecha seleccionada
+
+      //const dayOfWeek = selectedDate.getDay(); // Obtiene el día de la semana (0-6)
+      // Suponiendo que tienes la fecha seleccionada en la variable selectedDate
+      const selectedDate = new Date(store.getters.getSelectedDate); // Aquí asigna la fecha seleccionada por el usuario
+
+      // Obtener el día de la semana como un número (0 para Domingo, 1 para Lunes, ..., 6 para Sábado)
+      const dayOfWeek = selectedDate.getDay();
+
+      // Definir un array con los nombres de los días de la semana
+      const daysOfWeekNames = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+
+      // Obtener el nombre del día de la semana
+      const diaSemana = daysOfWeekNames[dayOfWeek];
+
+      PaseadoresService.getByBarrio(clientId, { dia_semana: diaSemana })
         .then((response) => {
           this.paseadores = response.data;
+          this.date = moment(store.getters.getSelectedDate).format('DD/MM/YYYY');
+          this.time = store.getters.getSelectedTime;
+          
         })
         .catch((error) => {
           console.log(error);

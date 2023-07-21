@@ -156,13 +156,17 @@ Paseador.getAll = (result) => {
   });
 };
 
-Paseador.getByBarrio = (clienteId, result) => {
+Paseador.getByBarrio = (clienteId, diaSemana, result) => {
   sql.query(
     `SELECT Paseadores.*
     FROM Clientes
     JOIN Paseadores ON Clientes.id_barrio = Paseadores.id_barrio
-    WHERE Clientes.id = ?`,
-    [clienteId],
+    WHERE Clientes.id = ? AND Paseadores.id IN (
+        SELECT DISTINCT id_paseador
+        FROM dias_disponibles
+        WHERE dia_semana = ?
+    )`,
+    [clienteId, diaSemana],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -175,6 +179,7 @@ Paseador.getByBarrio = (clienteId, result) => {
     }
   );
 };
+
 
 Paseador.updateById = (id, paseador, diasDisponibles, result) => {
   //const restoPaseador  = paseador; // Obtener los días disponibles del objeto paseador

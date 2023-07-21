@@ -4,8 +4,8 @@ import AuthService from '@/services/AuthService';
 
 const routes = [
   {
-    path: "/",
-    alias: "/lista-paseadores",
+    
+    path: "/lista-paseadores",
     name: "paseadores",
     component: () => import("./components/Cliente/PaseadoresList.vue"),
     meta: { requiresAuth: true }
@@ -37,7 +37,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/reservas/:id",
+    path: "/",
+    alias: "/reservar",
     name: "add-reserva",
     component: () => import("./components/Cliente/AddReserva.vue"),
     meta: { requiresAuth: true }

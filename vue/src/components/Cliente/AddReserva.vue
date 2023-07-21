@@ -21,7 +21,7 @@
         <label for="hora">Hora:</label>
         <div class="input-with-icon">
           <select id="hora" v-model="hora" required>
-            <option value="">Seleccionar rango horario del paseo</option>
+            <option value="">Seleccionar horario</option>
             <option v-for="hour in availableHours" :key="hour" :value="hour">{{ hour }}</option>
           </select>
           <span class="input-icon">
@@ -38,9 +38,9 @@
 <script>
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.css';
+import 'flatpickr/dist/l10n/es'
 import moment from 'moment';
 import NavCliente from "@/components/Nav/NavCliente.vue";
-import ReservasService from "@/services/ReservasService";
 import store from "@/store/index";
 
 export default {
@@ -61,6 +61,7 @@ export default {
       minDate: moment().add(1, 'day').toDate(), // Establecer la fecha mínima a partir del día siguiente a hoy
       maxDate: new Date().fp_incr(30),
       dateFormat: 'd/m/Y', // Formato de fecha DD/MM/YYYY
+      locale: 'es',
       onChange: (selectedDates, dateStr) => {
         this.fecha = moment(dateStr, 'DD/MM/YYYY').format('DD/MM/YYYY');
       }
@@ -95,22 +96,26 @@ export default {
       }
 
       const nuevaReserva = {
-        id_paseador: this.$route.params.id,
-        id_cliente: store.getters.getClientId,
-        fecha: moment(this.fecha, 'DD/MM/YYYY').format('YYYY/MM/DD'), // Convertir la fecha al formato YYYY/MM/DD
+        //id_paseador: this.$route.params.id,
+        //id_cliente: store.getters.getClientId,
+        fecha: moment(this.fecha, 'DD/MM/YYYY').format('MM/DD/YYYY'), // Convertir la fecha al formato YYYY/MM/DD
         hora: this.hora,
       };
 
-      ReservasService.create(nuevaReserva)
-        .then((response) => {
-          console.log("Reserva creada exitosamente: ", response.data);
-          // Realizar acciones adicionales después de crear una reserva (redireccionar, mostrar mensaje, etc.)
-          this.$router.push("/reservas-cliente");
-        })
-        .catch((error) => {
-          console.log("Error al crear la reserva: ", error);
-          this.error = "Error al crear la reserva." + error;
-        });
+      try{
+        store.commit('setSelectedDate', nuevaReserva.fecha);
+        store.commit('setSelectedTime', nuevaReserva.hora);
+        //console.log("Fecha y hora seleccionadas con éxito: ", response.data);
+        //console.log("Store: ", store);
+        this.$router.push("/lista-paseadores");
+        store.commit('setNotification', 'success');
+        store.commit('setMessage', 'Fecha y hora seleccionadas con éxito');
+      }catch(error){
+        console.log("Error al crear la reserva: ", error);
+        this.error = "Error al crear la reserva." + error;
+      }
+
+
     },
     validateReservation() {
       if (!this.fecha) {

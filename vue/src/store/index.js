@@ -4,7 +4,9 @@ const store = createStore({
   state: {
     clientId: null,
     notification: null,
-    message: null
+    message: null,
+    selectedDate: null,
+    selectedTime: null
   },
   mutations: {
     setClientId(state, id) {
@@ -24,6 +26,16 @@ const store = createStore({
     },
     clearMessage(state) {
       state.message = null;
+    },
+    setSelectedDate(state, date) {
+      state.selectedDate = date;
+    },
+    setSelectedTime(state, time) {
+      state.selectedTime = time;
+    },
+    clearSelectedDateTime(state) {
+      state.selectedDate = null;
+      state.selectedTime = null;
     }
   },
   actions: {
@@ -54,6 +66,13 @@ const store = createStore({
     },
     clearMessage({ commit }) {
       commit('clearMessage');
+    },
+    updateSelectedDateTime({ commit }, { date, time }) {
+      commit('setSelectedDate', date);
+      commit('setSelectedTime', time);
+    },
+    clearSelectedDateTime({ commit }) {
+      commit('clearSelectedDateTime');
     }
   },
   getters: {
@@ -65,6 +84,12 @@ const store = createStore({
     },
     getMessage(state) {
       return state.message;
+    },
+    getSelectedDate(state) {
+      return state.selectedDate;
+    },
+    getSelectedTime(state) {
+      return state.selectedTime;
     }
   }
 });

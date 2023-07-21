@@ -16,7 +16,10 @@
 
 <script>
 import PaseadoresService from "@/services/PaseadoresService";
+import ReservasService from "@/services/ReservasService";
 import NavCliente from "@/components/Nav/NavCliente.vue";
+import store from "@/store/index";
+import moment from 'moment';
 
 export default {
   name: "PaseadorIndividual",
@@ -43,8 +46,26 @@ export default {
         });
     },
     reservarPaseador() {
-      // Redirect to the reservation page with the paseador ID
-      this.$router.push(`/reservas/${this.paseador.id}`);
+
+      const nuevaReserva = {
+        id_paseador: this.$route.params.id,
+        id_cliente: store.getters.getClientId,
+        fecha: moment(store.getters.getSelectedDate).format('YYYY/MM/DD'),
+        hora: store.getters.getSelectedTime,
+      };
+
+      ReservasService.create(nuevaReserva)
+        .then((response) => {
+          console.log(response.data);
+          this.$router.push("/reservas-cliente");
+          store.commit('setNotification', 'success');
+          store.commit('setMessage', 'Paseo reservado!');
+        })
+        .catch((error) => {
+          console.log("Error al crear la reserva: ", error);
+          this.error = "Error al crear la reserva." + error;
+        });
+
     },
     getImageUrl(filename) {
       if (filename) {

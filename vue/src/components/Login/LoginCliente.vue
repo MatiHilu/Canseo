@@ -7,10 +7,10 @@
       <img class="canseo-img" src="http://localhost:8081/uploads/Canseo-login.png" alt="CanSeo">
       <form @submit.prevent="login">
         <div class="form-group">
-          <input type="email" id="email" v-model="email" required placeholder="Email">
+          <input type="email" id="email" v-model="email" required placeholder="Email" autocomplete="username">
         </div>
         <div class="form-group password-input">
-          <input id="password" v-model="password" :type="passwordFieldType" required placeholder="Contraseña">
+          <input id="password" v-model="password" :type="passwordFieldType" required placeholder="Contraseña" autocomplete="current-password">
           <span type="button" @click="togglePasswordVisibility">
             <img v-if="showPassword" src="http://localhost:8081/uploads/show-password.png" alt="Mostrar contraseña">
             <img v-else src="http://localhost:8081/uploads/hide-password.png" alt="Ocultar contraseña">
@@ -67,7 +67,7 @@ export default {
           store.commit('setClientId', clientId);
           localStorage.setItem("Authorization", 'Bearer ' + response.data.token);
           // Redireccionar a la página de cliente autenticado
-          this.$router.push("/lista-paseadores");
+          this.$router.push("/reservar");
 
           // Establecer notificación y mensaje en el store
           store.commit('setNotification', 'success');

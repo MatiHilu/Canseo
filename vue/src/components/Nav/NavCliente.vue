@@ -18,7 +18,7 @@
         <!-- Contenido del menú -->
         <div class="navbar-nav mr-auto">
           <li class="nav-item">
-            <router-link to="/lista-paseadores" class="nav-link">Paseadores</router-link>
+            <router-link to="/" class="nav-link">Reservar</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/reservas-cliente" class="nav-link">Reservas</router-link>
@@ -43,7 +43,7 @@
       </router-link>
       <div class="navbar-nav mr-auto mtop-10">
         <li class="nav-item">
-          <router-link to="/lista-paseadores" class="nav-link">Paseadores</router-link>
+          <router-link to="/" class="nav-link">Reservar</router-link>
         </li>
         <li class="nav-item">
           <router-link to="/reservas-cliente" class="nav-link">Reservas</router-link>
