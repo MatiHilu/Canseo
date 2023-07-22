@@ -33,12 +33,14 @@ const ReservasService = {
     return http.get(`/reservas/paseador/${id_paseador}`);
   },
 
-  getReservasPendientes() {
-    return http.get("/reservas/pendientes");
+  getReservasFiltradas(id_cliente, fecha) {
+    
+    return http.get(`/reservas/filtered/${id_cliente}?fecha=${fecha.fecha}&hora=${fecha.hora}&estado=${fecha.estado}`);
   },
 
-  getReservasRealizadas() {
-    return http.get("/reservas/realizadas");
+  getReservasFiltradasPaseador(id_paseador, fecha) {
+    
+    return http.get(`/reservas/filteredPaseador/${id_paseador}?fecha=${fecha.fecha}&hora=${fecha.hora}&estado=${fecha.estado}`);
   },
   
   updateEstado(reservaId, nuevoEstado) {

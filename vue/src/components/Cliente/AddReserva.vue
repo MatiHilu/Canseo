@@ -38,7 +38,7 @@
 <script>
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.css';
-import 'flatpickr/dist/l10n/es'
+import 'flatpickr/dist/l10n/es';
 import moment from 'moment';
 import NavCliente from "@/components/Nav/NavCliente.vue";
 import store from "@/store/index";

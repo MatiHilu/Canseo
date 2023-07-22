@@ -106,29 +106,6 @@ exports.getReservasByPaseadorId = (req, res) => {
   });
 };
 
-exports.getReservasPendientes = (req, res) => {
-  Reserva.getReservasPendientes((err, data) => {
-    if (err) {
-      return res.status(500).json({
-        message:
-          err.message || "Ocurrió un error al recuperar las Reservas pendientes.",
-      });
-    }
-    return res.send(data);
-  });
-};
-
-exports.getReservasRealizadas = (req, res) => {
-  Reserva.getReservasRealizadas((err, data) => {
-    if (err) {
-      return res.status(500).json({
-        message:
-          err.message || "Ocurrió un error al recuperar las Reservas realizadas.",
-      });
-    }
-    return res.send(data);
-  });
-};
 
 exports.updateEstado = (req, res) => {
   // Validar la solicitud
@@ -187,5 +164,39 @@ exports.deleteAll = (req, res) => {
     return res.send({
       message: `¡Todas las Reservas se eliminaron correctamente!`,
     });
+  });
+};
+
+exports.getReservasFiltradas = (req, res) => {
+  const clienteId = req.params.id_cliente;
+  const { fecha, hora, estado } = req.query;
+  console.log(fecha)
+  console.log(clienteId)
+
+  Reserva.getReservasFiltradas(clienteId, fecha, hora, estado, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message || "Ocurrió un error al buscar las reservas filtradas.",
+      });
+    } else {
+      res.send(data);
+    }
+  });
+};
+
+exports.getReservasFiltradasPaseador = (req, res) => {
+  const clienteId = req.params.id_paseador;
+  const { fecha, hora, estado } = req.query;
+  console.log(fecha)
+  console.log(clienteId)
+
+  Reserva.getReservasFiltradasPaseador(clienteId, fecha, hora, estado, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message || "Ocurrió un error al buscar las reservas filtradas.",
+      });
+    } else {
+      res.send(data);
+    }
   });
 };

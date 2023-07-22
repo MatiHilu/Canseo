@@ -5,6 +5,38 @@
     <div v-if="notification" class="notification" :class="notificationClass">
       {{ message }}
     </div>
+    <div class="filter-section">
+      <form @submit.prevent="fetchReservasFiltradas">
+        <div class="form-row">
+          <label class="fecha" for="fecha">Fecha:</label>
+          <input type="date" v-model="fecha" id="fecha">
+        </div>
+
+        <div class="form-row">
+          <label class="hora" for="hora">Hora:</label>
+          <select v-model="hora" id="hora">
+            <option value="">Todos</option>
+            <option value="7:00">7:00 - 13:00</option>
+            <option value="13:00">13:00 - 17:00</option>
+            <option value="18:00">18:00 - 22:00</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label class="estado" for="estado">Estado:</label>
+          <select v-model="estado" id="estado">
+            <option value="">Todos</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Terminado">Terminado</option>
+          </select>
+        </div>
+
+        <div class="form-row row-buttons">
+          <button type="submit">Filtrar</button>
+          <button @click="clearFilters">Borrar Filtros</button>
+        </div>
+      </form>
+    </div>
     <div v-for="reserva in reservas" :key="reserva.id" class="reserva-item">
       <div class="img-reserva">
         <p>Fecha: {{ formatDate(reserva.fecha) }}</p>
@@ -36,6 +68,9 @@
         reservas: [],
         paseadores: [],
         notification: null,
+        fecha: '',
+        hora: '',
+        estado: '',
       };
     },
     mounted() {
@@ -48,11 +83,34 @@
         ReservasService.getReservasByUserId(id_cliente)
           .then((response) => {
             this.reservas = response.data.reverse();
-            console.log(this.reservas)
           })
           .catch((error) => {
             console.log(error);
           });
+      },
+      fetchReservasFiltradas() {
+        const id_cliente = store.getters.getClientId;
+        console.log('fecha filtro', this.fecha)
+        console.log('hora filtro', this.hora)
+        console.log('estado filtro', this.estado)
+        ReservasService.getReservasFiltradas(id_cliente, {
+          fecha: this.fecha,
+          hora: this.hora,
+          estado: this.estado,
+        })
+          .then((response) => {
+            console.log(response)
+            this.reservas = response.data.reverse();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      },
+      clearFilters() {
+      this.fecha = '';
+      this.hora = '';
+      this.estado = '';
+      this.fetchReservas();
       },
       formatDate(date) {
         return moment(date).format("DD/MM/YYYY");
@@ -112,7 +170,6 @@
     border-radius: 100px;
   }
 
-
   .reserva-item {
     width: 100%;
     margin-bottom: 10px;
@@ -134,15 +191,101 @@
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 5px;
-}
+  }
 
-.notification-success {
-  background-color: #dff0d8;
-  color: #3c763d;
-}
+  .notification-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+  }
 
-.notification-error {
-  background-color: #f2dede;
-  color: #a94442;
-}
+  .notification-error {
+    background-color: #f2dede;
+    color: #a94442;
+  }
+
+  @media (min-width: 860px){
+    .filter-section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 10px;
+  }
+
+  .filter-section form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-row{
+    margin-right: 15px;
+      margin-left: 0;
+  }
+
+  .form-row button {
+    margin-right: 5px;
+    cursor: pointer;
+    padding: 4px 15px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #8dbd47;
+  }
+
+  label{
+    margin-right: 5px;
+    margin-bottom: 0;
+  }
+
+  }
+
+  @media (max-width: 859px) {
+    .filter-section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 10px;
+  }
+
+
+  input, select{
+    width: 200px;
+    padding: 0px 8px;
+  }
+
+  .filter-section form{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  label{
+    margin-right: 15px;
+  }
+  .form-row{
+    margin-top: 10px;
+  }
+  .form-row button {
+    margin-right: 5px;
+    cursor: pointer;
+    padding: 4px 15px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #8dbd47;
+  }
+
+  .fecha{
+    margin-right: 17px;
+  }
+
+  .hora{
+    margin-right: 24px;
+  }
+
+  .estado{
+    margin-right: 10px;
+  }
+  }
 </style>

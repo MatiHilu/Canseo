@@ -15,11 +15,11 @@ router.get("/user/:id_cliente", authenticate, reservaController.getReservasByUse
 // Obtener las Reservas por ID de Paseador
 router.get("/paseador/:id_paseador", authenticate, reservaController.getReservasByPaseadorId);
 
-// Obtener las Reservas Pendientes
-router.get("/pendientes", authenticate, reservaController.getReservasPendientes);
+// Obtener reservas filtradas por cliente, fecha, hora y estado
+router.get("/filtered/:id_cliente", authenticate, reservaController.getReservasFiltradas);
 
-// Obtener las Reservas Realizadas
-router.get("/realizadas", authenticate, reservaController.getReservasRealizadas);
+// Obtener reservas filtradas por cliente, fecha, hora y estado
+router.get("/filteredPaseador/:id_paseador", authenticate, reservaController.getReservasFiltradasPaseador);
 
 // Actualizar el estado de una Reserva por su Id
 router.patch("/:reservaId/estado", authenticate, reservaController.updateEstado);

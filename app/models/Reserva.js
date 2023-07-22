@@ -16,8 +16,14 @@ Reserva.create = (newReserva, result) => {
       return;
     }
 
-    console.log("created reserva: ", { id: res.insertId, ...newReserva });
-    result(null, { id: res.insertId, ...newReserva });
+    console.log("created reserva: ", {
+      id: res.insertId,
+      ...newReserva
+    });
+    result(null, {
+      id: res.insertId,
+      ...newReserva
+    });
   });
 };
 
@@ -35,7 +41,9 @@ Reserva.findById = (id, result) => {
       return;
     }
 
-    result({ kind: "not_found" }, null);
+    result({
+      kind: "not_found"
+    }, null);
   });
 };
 
@@ -70,12 +78,12 @@ Reserva.getReservasByUserId = (id_cliente, result) => {
 
 Reserva.getReservasByPaseadorId = (id_paseador, result) => {
   sql.query(
-    `SELECT r.*, c.Nombre, c.Apellido, c.foto_perfil, c.Direccion, c.Nombre_Perro, c.id_raza, rz.Nombre AS Nombre_Raza
-    FROM Reservas r
-    INNER JOIN Clientes c ON r.id_cliente = c.id
-    INNER JOIN Paseadores p ON r.id_paseador = p.id
-    INNER JOIN Razas rz ON c.id_raza = rz.id
-    WHERE r.id_paseador = ${id_paseador}`,
+    `SELECT r.*, c.nombre, c.apellido, c.foto_perfil, c.direccion, c.nombre_perro, c.id_raza, rz.nombre AS nombre_raza
+  FROM Reservas r
+  INNER JOIN Clientes c ON r.id_cliente = c.id
+  INNER JOIN Paseadores p ON r.id_paseador = p.id
+  INNER JOIN Razas rz ON c.id_raza = rz.id
+  WHERE r.id_paseador = ${id_paseador}`,
     (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -89,37 +97,7 @@ Reserva.getReservasByPaseadorId = (id_paseador, result) => {
   );
 };
 
-Reserva.getReservasPendientes = (result) => {
-  sql.query(
-    `SELECT * FROM Reservas WHERE estado = 'Pendiente'`,
-    (err, res) => {
-      if (err) {
-        console.log("error: ", err);
-        result(err, null);
-        return;
-      }
 
-      console.log("reservas pendientes: ", res);
-      result(null, res);
-    }
-  );
-};
-
-Reserva.getReservasRealizadas = (result) => {
-  sql.query(
-    `SELECT * FROM Reservas WHERE estado = 'Terminado'`,
-    (err, res) => {
-      if (err) {
-        console.log("error: ", err);
-        result(err, null);
-        return;
-      }
-
-      console.log("reservas realizadas: ", res);
-      result(null, res);
-    }
-  );
-};
 
 Reserva.updateEstadoById = (id, estado, result) => {
   sql.query(
@@ -133,12 +111,20 @@ Reserva.updateEstadoById = (id, estado, result) => {
       }
 
       if (res.affectedRows == 0) {
-        result({ kind: "not_found" }, null);
+        result({
+          kind: "not_found"
+        }, null);
         return;
       }
 
-      console.log("updated reserva: ", { id: id, estado: estado });
-      result(null, { id: id, estado: estado });
+      console.log("updated reserva: ", {
+        id: id,
+        estado: estado
+      });
+      result(null, {
+        id: id,
+        estado: estado
+      });
     }
   );
 };
@@ -156,12 +142,20 @@ Reserva.updateById = (id, reserva, result) => {
       }
 
       if (res.affectedRows == 0) {
-        result({ kind: "not_found" }, null);
+        result({
+          kind: "not_found"
+        }, null);
         return;
       }
 
-      console.log("updated reserva: ", { id: id, ...reserva });
-      result(null, { id: id, ...reserva });
+      console.log("updated reserva: ", {
+        id: id,
+        ...reserva
+      });
+      result(null, {
+        id: id,
+        ...reserva
+      });
     }
   );
 };
@@ -175,7 +169,9 @@ Reserva.remove = (id, result) => {
     }
 
     if (res.affectedRows == 0) {
-      result({ kind: "not_found" }, null);
+      result({
+        kind: "not_found"
+      }, null);
       return;
     }
 
@@ -212,6 +208,78 @@ Reserva.countReservations = (id_paseador, fecha, hora, result) => {
       result(null, res[0].count);
     }
   );
+};
+
+Reserva.getReservasFiltradas = (clienteId, fecha, hora, estado, result) => {
+  let query = `
+  SELECT r.*, p.*, rz.nombre AS nombre_raza
+  FROM Reservas r
+  JOIN Paseadores p ON r.id_paseador = p.id
+  WHERE r.id_cliente = ?`;
+  const queryParams = [clienteId];
+
+  if (fecha) {
+    query += " AND fecha = ?";
+    queryParams.push(fecha);
+  }
+
+  if (hora) {
+    query += " AND hora = ?";
+    queryParams.push(hora);
+  }
+
+  if (estado) {
+    query += " AND estado = ?";
+    queryParams.push(estado);
+  }
+
+  sql.query(query, queryParams, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("reservas filtradas: ", res);
+    result(null, res);
+  });
+};
+
+Reserva.getReservasFiltradasPaseador = (clienteId, fecha, hora, estado, result) => {
+  let query = `
+  SELECT r.*, c.*, rz.nombre AS nombre_raza
+  FROM Reservas r
+  JOIN Clientes c ON r.id_cliente = c.id
+  INNER JOIN Razas rz ON c.id_raza = rz.id
+  WHERE r.id_paseador = ?
+  `;
+  const queryParams = [clienteId];
+
+  if (fecha) {
+    query += " AND fecha = ?";
+    queryParams.push(fecha);
+  }
+
+  if (hora) {
+    query += " AND hora = ?";
+    queryParams.push(hora);
+  }
+
+  if (estado) {
+    query += " AND estado = ?";
+    queryParams.push(estado);
+  }
+
+  sql.query(query, queryParams, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("reservas filtradas: ", res);
+    result(null, res);
+  });
 };
 
 module.exports = Reserva;
