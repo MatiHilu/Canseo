@@ -49,33 +49,37 @@ export default {
   },
   methods: {
     fetchPaseadores() {
-      const clientId = store.getters.getClientId;
-      //const selectedDate = new Date(store.getters.getSelectedDate); // Ejemplo de fecha seleccionada
+  const clientId = store.getters.getClientId;
+  const selectedTime = store.getters.getSelectedTime;
+  const selectedDate = new Date(store.getters.getSelectedDate);
+  const dayOfWeek = selectedDate.getDay();
+  const daysOfWeekNames = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+  const diaSemana = daysOfWeekNames[dayOfWeek];
 
-      //const dayOfWeek = selectedDate.getDay(); // Obtiene el día de la semana (0-6)
-      // Suponiendo que tienes la fecha seleccionada en la variable selectedDate
-      const selectedDate = new Date(store.getters.getSelectedDate); // Aquí asigna la fecha seleccionada por el usuario
+  // Enviar los datos de fecha y hora en la URL de la solicitud GET
+  const fecha =  moment(store.getters.getSelectedDate).format('YYYY-MM-DD');// Convertir fecha a formato ISO (YYYY-MM-DD)
+ 
+  const horaInicial = selectedTime.split(' - ')[0];
+   // Salida: '7:00'
 
-      // Obtener el día de la semana como un número (0 para Domingo, 1 para Lunes, ..., 6 para Sábado)
-      const dayOfWeek = selectedDate.getDay();
+  // Agregar los datos de fecha y hora a la URL de la solicitud GET
+  PaseadoresService.getByBarrio(clientId, { dia_semana: diaSemana, fecha: fecha, hora: horaInicial })
+    .then((response) => {
 
-      // Definir un array con los nombres de los días de la semana
-      const daysOfWeekNames = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
-
-      // Obtener el nombre del día de la semana
-      const diaSemana = daysOfWeekNames[dayOfWeek];
-
-      PaseadoresService.getByBarrio(clientId, { dia_semana: diaSemana })
-        .then((response) => {
-          this.paseadores = response.data;
-          this.date = moment(store.getters.getSelectedDate).format('DD/MM/YYYY');
-          this.time = store.getters.getSelectedTime;
-          
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+      console.log("selectedTime", selectedTime)
+      console.log("store.getters.getSelectedDate", store.getters.getSelectedDate)
+      console.log("store.getters.getSelectedTime", store.getters.getSelectedTime)
+      console.log("fecha", fecha)
+      console.log(horaInicial);
+      this.paseadores = response.data;
+      this.date = moment(store.getters.getSelectedDate).format('DD/MM/YYYY');
+      this.time = store.getters.getSelectedTime;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+,
     fetchNotification() {
       this.notification = store.state.notification;
       this.message = store.state.message;

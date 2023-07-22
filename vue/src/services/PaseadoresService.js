@@ -9,11 +9,11 @@ const PaseadoresService = {
     return http.get("/paseadores");
   },
 
-  getByBarrio(clienteId, diaSemana) {
+  getByBarrio(clienteId, diaSemana, fecha, hora) {
     // Configurar el encabezado de autorización
     AuthService.setAuthHeader();
 
-    return http.get(`/paseadores/by-barrio/${clienteId}?diaSemana=${diaSemana}`, {
+    return http.get(`/paseadores/by-barrio/${clienteId}?diaSemana=${diaSemana}&fecha=${fecha}&hora=${hora}`, {
       params: {
         dia_semana: diaSemana
       }

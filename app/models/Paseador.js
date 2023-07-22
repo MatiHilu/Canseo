@@ -156,7 +156,7 @@ Paseador.getAll = (result) => {
   });
 };
 
-Paseador.getByBarrio = (clienteId, diaSemana, result) => {
+Paseador.getByBarrio = (clienteId, diaSemana, fecha, hora, result) => {
   sql.query(
     `SELECT Paseadores.*
     FROM Clientes
@@ -165,8 +165,14 @@ Paseador.getByBarrio = (clienteId, diaSemana, result) => {
         SELECT DISTINCT id_paseador
         FROM dias_disponibles
         WHERE dia_semana = ?
+    ) AND Paseadores.id NOT IN (
+        SELECT id_paseador
+        FROM Reservas
+        WHERE fecha = ? AND hora = ?
+        GROUP BY id_paseador
+        HAVING COUNT(*) >= 6
     )`,
-    [clienteId, diaSemana],
+    [clienteId, diaSemana, fecha, hora],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -179,6 +185,7 @@ Paseador.getByBarrio = (clienteId, diaSemana, result) => {
     }
   );
 };
+
 
 
 Paseador.updateById = (id, paseador, diasDisponibles, result) => {

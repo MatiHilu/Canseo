@@ -227,8 +227,10 @@ exports.findByBarrio = (req, res) => {
   const clienteId = req.params.clienteId;
   const diaSemanaObject = JSON.parse(req.query.dia_semana);
   const diaSemana = diaSemanaObject.dia_semana;
+  const fecha = diaSemanaObject.fecha;
+  const hora = diaSemanaObject.hora;
   
-  Paseador.getByBarrio(clienteId, diaSemana, (err, data) => {
+  Paseador.getByBarrio(clienteId, diaSemana, fecha, hora, (err, data) => {
     if (err) {
       res.status(500).send({
         message: err.message || "Ocurrió un error al buscar los paseadores por ID de barrio."
