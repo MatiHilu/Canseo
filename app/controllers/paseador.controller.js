@@ -3,75 +3,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const upload = require("../middlewares/upload");
-/*
-exports.register = (req, res) => {
-  // Validar la solicitud
-  if (!req.body) {
-    res.status(400).send({
-      message: "¡El contenido no puede estar vacío!"
-    });
-    return;
-  }
-
-  // Verificar si el email ya está registrado
-  Paseador.findByEmail(req.body.email, async (err, data) => {
-    if (err) {
-      res.status(500).send({
-        message: err.message || "Ocurrió un error al verificar el email."
-      });
-      return;
-    }
-
-    if (data) {
-      res.status(400).send({
-        message: "El email ya está registrado."
-      });
-      return;
-    }
-
-    try {
-      // Obtener la ruta temporal del archivo de imagen
-      const fotoPerfil = req.file ? req.file.path : null;
-      
-
-      // Crear un Paseador
-      const paseador = new Paseador({
-        nombre: req.body.nombre,
-        apellido: req.body.apellido,
-        email: req.body.email,
-        telefono: req.body.telefono,
-        direccion: req.body.direccion,
-        descripcion: req.body.descripcion,
-        password: await bcrypt.hash(req.body.password, 10), // Hash de la contraseña
-        id_barrio: req.body.id_barrio,
-        foto_perfil: fotoPerfil // Ruta del archivo de imagen de perfil
-      });
-
-      // Guardar el Paseador en la base de datos
-      Paseador.create(paseador, (err, data) => {
-        if (err) {
-          // Eliminar la imagen de perfil si ocurre un error al guardar en la base de datos
-          if (fotoPerfil) {
-            fs.unlinkSync(fotoPerfil);
-          }
-          res.status(500).send({
-            message: err.message || "Ocurrió un error al crear el Paseador."
-          });
-        } else {
-          res.send(data);
-        }
-      });
-    } catch (error) {
-      // Eliminar la imagen de perfil si ocurre un error
-      if (fotoPerfil) {
-        fs.unlinkSync(fotoPerfil);
-      }
-      res.status(500).send({
-        message: "Ocurrió un error al subir la imagen de perfil."
-      });
-    }
-  });
-};*/
 
 exports.register = (req, res) => {
   // Validar la solicitud
@@ -118,26 +49,14 @@ exports.register = (req, res) => {
       console.log(fotoPerfil)
 
       // Obtener los días disponibles del cuerpo de la solicitud
-      
+
       let dias_Disponibles;
 
       if (Array.isArray(req.body.dias_disponibles)) {
-         dias_Disponibles = req.body.dias_disponibles || [];
+        dias_Disponibles = req.body.dias_disponibles || [];
       } else {
         dias_Disponibles = [req.body.dias_disponibles] || [];
       }
-
-
-/*
-       console.log("req.body controlador", req.body)
-       console.log("req.body.dias_disponibles controlador", [req.body.dias_disponibles])
-       console.log("diasDisponibles controlador", dias_Disponibles)
-       console.log("diasDisponibles controlador", dias_Disponibles.length)*/
-
-
-
-
-
 
       // Guardar el Paseador en la base de datos con los días disponibles
       Paseador.create(paseador, dias_Disponibles, (err, data) => {
@@ -190,7 +109,7 @@ exports.login = (req, res) => {
       });
       return;
     }
- 
+
     // Verificar la contraseña
     const passwordMatch = await Paseador.comparePassword(req.body.password, data.password);
     if (!passwordMatch) {
@@ -201,11 +120,16 @@ exports.login = (req, res) => {
     }
 
     // Generar el token de autenticación
-    const token = jwt.sign({ id: data.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({
+      id: data.id
+    }, process.env.JWT_SECRET, {
       expiresIn: "72h"
     });
 
-    res.send({ token, clientId: data.id });
+    res.send({
+      token,
+      clientId: data.id
+    });
   });
 };
 
@@ -215,8 +139,7 @@ exports.findAll = (req, res) => {
   Paseador.getAll((err, data) => {
     if (err)
       res.status(500).send({
-        message:
-          err.message || "Ocurrió un error al recuperar los Paseadores."
+        message: err.message || "Ocurrió un error al recuperar los Paseadores."
       });
     else res.send(data);
   });
@@ -229,7 +152,7 @@ exports.findByBarrio = (req, res) => {
   const diaSemana = diaSemanaObject.dia_semana;
   const fecha = diaSemanaObject.fecha;
   const hora = diaSemanaObject.hora;
-  
+
   Paseador.getByBarrio(clienteId, diaSemana, fecha, hora, (err, data) => {
     if (err) {
       res.status(500).send({
@@ -267,12 +190,9 @@ exports.update = (req, res) => {
     return;
   }
 
-  //console.log("imagen", req.file)
-  
+
+
   try {
-    // Obtener la ruta temporal del archivo de imagen
-    //const fotoPerfil = req.file ? req.file.path : req.file.path
-    
     const paseador = new Paseador({
       nombre: req.body.nombre,
       apellido: req.body.apellido,
@@ -282,7 +202,7 @@ exports.update = (req, res) => {
       descripcion: req.body.descripcion,
       id_barrio: req.body.id_barrio,
       foto_perfil: req.file && req.file.path !== null ? req.file.path : undefined
-    // Nombre del archivo de imagen de perfil o mantener el mismo si no se subió uno nuevo
+      // Nombre del archivo de imagen de perfil o mantener el mismo si no se subió uno nuevo
     });
 
     const diasDisponibles = req.body.dias_disponibles || [];
@@ -293,14 +213,13 @@ exports.update = (req, res) => {
       } else {
         res.send(data);
       }
-    }); 
+    });
   } catch (error) {
-    //console.log("Ocurrió un error al subir la imagen de perfil. ", error);
     res.status(500).send({
       message: "Ocurrió un error al subir la imagen de perfil. " + error
     });
   }
-  
+
 };
 
 
@@ -318,7 +237,9 @@ exports.delete = (req, res) => {
           message: "No se pudo eliminar el Paseador con el id " + req.params.id
         });
       }
-    } else res.send({ message: `¡El Paseador se eliminó correctamente!` });
+    } else res.send({
+      message: `¡El Paseador se eliminó correctamente!`
+    });
   });
 };
 
@@ -327,10 +248,11 @@ exports.deleteAll = (req, res) => {
   Paseador.removeAll((err, data) => {
     if (err)
       res.status(500).send({
-        message:
-          err.message || "Ocurrió un error al eliminar todos los Paseadores."
+        message: err.message || "Ocurrió un error al eliminar todos los Paseadores."
       });
-    else res.send({ message: `¡Todos los Paseadores se eliminaron correctamente!` });
+    else res.send({
+      message: `¡Todos los Paseadores se eliminaron correctamente!`
+    });
   });
 };
 
@@ -387,7 +309,9 @@ exports.changePassword = (req, res) => {
           return;
         }
 
-        res.send({ message: "¡La contraseña se cambió correctamente!" });
+        res.send({
+          message: "¡La contraseña se cambió correctamente!"
+        });
       });
     } catch (error) {
       res.status(500).send({

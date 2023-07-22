@@ -42,7 +42,6 @@ Cliente.findById = (id, result) => {
       }
 
       if (res.length) {
-        //console.log("found cliente: ", res[0]);
         result(null, res[0]);
         return;
       }

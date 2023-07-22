@@ -312,8 +312,7 @@ textarea {
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 5px;
-  /*text-align: center;*/
-  /*font-weight: bold;*/
+
 }
 
 .error {

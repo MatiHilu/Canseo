@@ -202,10 +202,10 @@
       },
       getImageUrl(filename) {
         if (filename) {
-          //const imagePath = filename.replace(/\\/g, '/').replace('/vue', '');
+          
           const imagePath = filename.replace('vue', '').replace('public', '');
           const baseUrl = window.location.origin;
-          //const imageUrl = imagePath.startsWith('/vue') ? imagePath.substr(1) : imagePath;
+          
           return `${baseUrl}/${imagePath}`;
         }
       }

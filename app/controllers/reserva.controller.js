@@ -129,35 +129,6 @@ exports.getReservasRealizadas = (req, res) => {
     return res.send(data);
   });
 };
-/*
-exports.update = (req, res) => {
-  // Validar la solicitud
-  if (!req.body) {
-    return res.status(400).json({
-      message: "¡El contenido no puede estar vacío!",
-    });
-  }
-
-  Reserva.updateById(
-    req.params.id,
-    new Reserva(req.body),
-    (err, data) => {
-      if (err) {
-        if (err.kind === "not_found") {
-          return res.status(404).json({
-            message: `No se encontró la Reserva con el id ${req.params.id}.`,
-          });
-        } else {
-          return res.status(500).json({
-            message:
-              "Error al actualizar la Reserva con el id " + req.params.id,
-          });
-        }
-      }
-      return res.send(data);
-    }
-  );
-};*/
 
 exports.updateEstado = (req, res) => {
   // Validar la solicitud

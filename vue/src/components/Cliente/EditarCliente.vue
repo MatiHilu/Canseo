@@ -140,10 +140,6 @@ export default {
       EditarCliente.append('id_raza', this.updatedClienteData.id_raza);
       EditarCliente.append('foto_perfil', this.updatedClienteData.foto_perfil);
 
-     /* console.log("Datos del EditarCliente:");
-        for (const [key, value] of EditarCliente.entries()) {
-          console.log(key + ": " + value);
-          }*/
       console.log("Datos enviados al backend:", Object.fromEntries(EditarCliente));
       ClienteService.update(clienteId, EditarCliente)
         .then(() => {
@@ -174,10 +170,10 @@ export default {
     },
     getImageUrl(filename) {
   if (filename) {
-    //const imagePath = filename.replace(/\\/g, '/').replace('/vue', '');
+    
     const imagePath = filename.replace('vue', '').replace('public', '');
     const baseUrl = window.location.origin;
-    //const imageUrl = imagePath.startsWith('/vue') ? imagePath.substr(1) : imagePath;
+    
     return `${baseUrl}/${imagePath}`;
   }
 }
@@ -258,7 +254,6 @@ button {
   font-size: 18px;
   padding: 8px 15px;
   cursor: pointer;
-  /*width: 50%;*/
   align-self: center;
   margin-bottom: 20px;
   margin-top: 20px;
@@ -282,8 +277,7 @@ border-radius: 100px;
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 5px;
-  /*text-align: center;*/
-  /*font-weight: bold;*/
+
 }
 
 .error {

@@ -160,10 +160,7 @@ exports.update = (req, res) => {
 
   console.log("imagen", req.file)
   
-  try {
-    // Obtener la ruta temporal del archivo de imagen
-    //const fotoPerfil = req.file ? req.file.path : req.file.path
-    
+  try {  
     const cliente = new Cliente({
       nombre: req.body.nombre,
       apellido: req.body.apellido,
@@ -179,10 +176,6 @@ exports.update = (req, res) => {
 
     Cliente.updateById(req.params.clienteId, cliente, (err, data) => {
       if (err) {
-        // Eliminar la imagen de perfil si ocurre un error al guardar en la base de datos
-        /*if (fotoPerfil) {
-          fs.unlinkSync(fotoPerfil);
-        }*/
           res.status(500).send({
             message: err.message || "Ocurrió un error al editar el Cliente."
           });

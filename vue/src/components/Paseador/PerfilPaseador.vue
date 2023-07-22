@@ -78,10 +78,10 @@ export default {
     },
     getImageUrl(filename) {
   if (filename) {
-    //const imagePath = filename.replace(/\\/g, '/').replace('/vue', '');
+    
     const imagePath = filename.replace('vue', '').replace('public', '');
     const baseUrl = window.location.origin;
-    //const imageUrl = imagePath.startsWith('/vue') ? imagePath.substr(1) : imagePath;
+    
     return `${baseUrl}/${imagePath}`;
   }
 }
@@ -132,7 +132,6 @@ h1 {
   font-size: 16px;
   padding: 4px 8px;
   cursor: pointer;
-  /*width: 50%;*/
   align-self: center;
   margin-bottom: 20px;
   margin-top: 20px;
@@ -155,8 +154,7 @@ h1 {
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 5px;
-  /*text-align: center;*/
-  /*font-weight: bold;*/
+
 }
 
 .error {

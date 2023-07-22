@@ -96,8 +96,6 @@ export default {
       }
 
       const nuevaReserva = {
-        //id_paseador: this.$route.params.id,
-        //id_cliente: store.getters.getClientId,
         fecha: moment(this.fecha, 'DD/MM/YYYY').format('MM/DD/YYYY'), // Convertir la fecha al formato YYYY/MM/DD
         hora: this.hora,
       };
@@ -105,8 +103,6 @@ export default {
       try{
         store.commit('setSelectedDate', nuevaReserva.fecha);
         store.commit('setSelectedTime', nuevaReserva.hora);
-        //console.log("Fecha y hora seleccionadas con éxito: ", response.data);
-        //console.log("Store: ", store);
         this.$router.push("/lista-paseadores");
         store.commit('setNotification', 'success');
         store.commit('setMessage', 'Fecha y hora seleccionadas con éxito');
@@ -203,8 +199,7 @@ input[type="text"]{
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 5px;
-  /*text-align: center;*/
-  /*font-weight: bold;*/
+
 }
 
 .error {
