@@ -17,7 +17,6 @@ router.get("/", authenticate, clienteController.findAll);
 router.get("/:id", authenticate, clienteController.findOne);
 
 // Actualizar un Cliente por su Id
-//router.put("/:id", authenticate, clienteController.update);
 router.put("/:clienteId", upload.single("foto_perfil"), authenticate, clienteController.update);
 
 // Cambiar la contraseña de un Cliente

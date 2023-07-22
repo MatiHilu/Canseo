@@ -24,9 +24,6 @@ router.get("/realizadas", authenticate, reservaController.getReservasRealizadas)
 // Actualizar el estado de una Reserva por su Id
 router.patch("/:reservaId/estado", authenticate, reservaController.updateEstado);
 
-// Actualizar una Reserva por su Id
-//router.put("/:id", authenticate, reservaController.update);
-
 // Eliminar una Reserva por su Id
 router.delete("/:id", authenticate, reservaController.delete);
 

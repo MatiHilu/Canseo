@@ -20,7 +20,6 @@ router.get("/by-barrio/:clienteId", authenticate, paseadorController.findByBarri
 router.get("/:id", authenticate, paseadorController.findOne);
 
 // Actualizar un Paseador por su Id
-//router.put("/:paseadorId", authenticate, paseadorController.update);
 router.put("/:paseadorId", upload.single("foto_perfil"), authenticate, paseadorController.update);
 
 // Cambiar la contraseña de un Cliente
