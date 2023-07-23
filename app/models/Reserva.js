@@ -212,7 +212,7 @@ Reserva.countReservations = (id_paseador, fecha, hora, result) => {
 
 Reserva.getReservasFiltradas = (clienteId, fecha, hora, estado, result) => {
   let query = `
-  SELECT r.*, p.*, rz.nombre AS nombre_raza
+  SELECT r.*, p.*
   FROM Reservas r
   JOIN Paseadores p ON r.id_paseador = p.id
   WHERE r.id_cliente = ?`;

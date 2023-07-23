@@ -99,8 +99,8 @@ Paseador.create = (newPaseador, dias_Disponibles, result) => {
 Paseador.findById = (id, result) => {
   sql.query(
     `SELECT p.*, b.nombre AS nombre_barrio, GROUP_CONCAT(diadis.dia_semana) AS dias_disponibles
-  FROM paseadores AS p
-  INNER JOIN barrios AS b ON p.id_barrio = b.id
+  FROM Paseadores AS p
+  INNER JOIN Barrios AS b ON p.id_barrio = b.id
   LEFT JOIN dias_disponibles AS diadis ON p.id = diadis.id_paseador
   WHERE p.id = ${id}
   GROUP BY p.id`,

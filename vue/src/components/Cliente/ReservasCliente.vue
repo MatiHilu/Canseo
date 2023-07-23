@@ -28,6 +28,7 @@
             <option value="">Todos</option>
             <option value="Pendiente">Pendiente</option>
             <option value="Terminado">Terminado</option>
+            <option value="Cancelado">Cancelado</option>
           </select>
         </div>
 
@@ -45,7 +46,12 @@
       </div>
       <p>Comienzo rango horario: {{ reserva.hora }}</p>
       <p>Paseador: {{ reserva.nombre }} {{ reserva.apellido }}</p>
-      <p>Estado: {{ reserva.estado }}</p>
+      <div class="div-cancelar">
+        <p>Estado: {{ reserva.estado }}</p>
+        <button v-if="reserva.estado === 'Pendiente' && cancelar(reserva)" @click="cambiarEstado(reserva.id, 'Cancelado')">Cancelar</button>
+        <span v-else></span>
+      </div>
+      
 
     </div>
 
@@ -90,16 +96,12 @@
       },
       fetchReservasFiltradas() {
         const id_cliente = store.getters.getClientId;
-        console.log('fecha filtro', this.fecha)
-        console.log('hora filtro', this.hora)
-        console.log('estado filtro', this.estado)
         ReservasService.getReservasFiltradas(id_cliente, {
           fecha: this.fecha,
           hora: this.hora,
           estado: this.estado,
         })
           .then((response) => {
-            console.log(response)
             this.reservas = response.data.reverse();
           })
           .catch((error) => {
@@ -126,6 +128,22 @@
       store.commit('setMessage', null);
     }, 8000); // 5 segundos en milisegundos
     },
+    cambiarEstado(reservaId, nuevoEstado) {
+      ReservasService.updateEstado(reservaId, nuevoEstado)
+        .then((response) => {
+          this.fetchReservas(); // Volver a cargar las reservas actualizadas
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log("Error al actualizar el estado de reserva:", error);
+        });
+    },
+    cancelar(reserva) {
+        const reservaDateTime = moment(`${reserva.fecha} ${reserva.hora}`, "YYYY-MM-DD HH:mm");
+        const now = moment();
+        const twentyFourHoursFromNow = now.clone().add(24, 'hours');
+        return reservaDateTime.isAfter(twentyFourHoursFromNow);
+      },
       getImageUrl(filename) {
         if (filename) {
           const imagePath = filename.replace('vue', '').replace('public', '');
@@ -202,6 +220,18 @@
     background-color: #f2dede;
     color: #a94442;
   }
+
+.div-cancelar{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.div-cancelar button{
+  border: 1px solid #fff;
+  background: #fff;
+  color: rgb(236, 40, 40);
+}
 
   @media (min-width: 860px){
     .filter-section {

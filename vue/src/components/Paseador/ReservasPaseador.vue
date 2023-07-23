@@ -28,6 +28,7 @@
             <option value="">Todos</option>
             <option value="Pendiente">Pendiente</option>
             <option value="Terminado">Terminado</option>
+            <option value="Cancelado">Cancelado</option>
           </select>
         </div>
 
@@ -44,11 +45,16 @@
       </div>
       <p>Hora: {{ reserva.hora }}</p>
       <p>Cliente: {{ reserva.nombre }} {{ reserva.apellido }}</p>
-      <p>Dirección: {{ reserva.direccion }}</p>
+      <div class="map-container">
+        <p>Dirección: {{ reserva.direccion }}</p>
+        <div id="map"></div>
+        <button @click="showDirections(reserva.direccion)" v-on:touchstart.passive="showDirections(reserva.direccion)">Ver cómo llegar</button>
+      </div>
       <p>Perro: {{ reserva.nombre_perro }} Raza: {{ reserva.nombre_raza }}</p>
       <p>Estado: {{ reserva.estado }}</p>
       <button v-if="reserva.estado === 'Pendiente'" @click="cambiarEstado(reserva.id, 'Terminado')" :disabled="!canMarkAsCompleted(reserva)">Paseo terminado</button>
       <span v-if="reserva.estado === 'Terminado'"></span>
+      <span v-if="reserva.estado === 'Cancelado'"></span>
     </div>
   </div>
 </template>
@@ -91,9 +97,6 @@ export default {
     },
     fetchReservasFiltradas() {
         const id_paseador = store.getters.getClientId;
-        console.log('fecha filtro', this.fecha)
-        console.log('hora filtro', this.hora)
-        console.log('estado filtro', this.estado)
         ReservasService.getReservasFiltradasPaseador(id_paseador, {
           fecha: this.fecha,
           hora: this.hora,
@@ -116,8 +119,8 @@ export default {
     cambiarEstado(reservaId, nuevoEstado) {
       ReservasService.updateEstado(reservaId, nuevoEstado)
         .then((response) => {
-          console.log("Estado de reserva actualizado:", response.data);
-          this.fetchReservas(); // Volver a cargar las reservas actualizadas
+          this.fetchReservas();
+          console.log(response) // Volver a cargar las reservas actualizadas
         })
         .catch((error) => {
           console.log("Error al actualizar el estado de reserva:", error);
@@ -150,6 +153,40 @@ export default {
         return `${baseUrl}/${imagePath}`;
       }
     },
+    showDirections(address) {
+      const geocoder = new window.google.maps.Geocoder();
+      const directionsService = new window.google.maps.DirectionsService();
+      const directionsDisplay = new window.google.maps.DirectionsRenderer({
+        map: this.map,
+      });
+
+      geocoder.geocode({ address }, (results, status) => {
+        if (status === "OK") {
+          const destination = results[0].geometry.location;
+
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+              const origin = new window.google.maps.LatLng(
+                position.coords.latitude,
+                position.coords.longitude
+              );
+
+              const request = {
+                origin,
+                destination,
+                travelMode: window.google.maps.TravelMode.DRIVING,
+              };
+
+              directionsService.route(request, (response, status) => {
+                if (status === "OK") {
+                  directionsDisplay.setDirections(response);
+                }
+              });
+            });
+          }
+        }
+      });
+    },
   },
   computed: {
     notificationClass() {
@@ -164,7 +201,21 @@ export default {
 </script>
 
 <style scoped>
-  .general{
+
+.map-container {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+#map {
+  width: 100%;
+  height: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.general{
     min-height: 60vh;  
     margin: 0 auto;
     padding-left: 10px;
